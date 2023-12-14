@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { auth, db } from "../../firebase-config";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 
 function AdminSignUp() {
   const inputs = [
@@ -57,7 +58,10 @@ function AdminSignUp() {
       minLength: 6,
     },
   ];
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({
+    role: "admin",
+  });
+  const navigate = useNavigate();
   const handleOnChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -89,8 +93,10 @@ function AdminSignUp() {
 
       // TODO: User this UID as a id anc create a collection in firestore with formData
       const userDoc = doc(db, "users", uid);
-      await setDoc(userDoc, rest);
+      await setDoc(userDoc, { ...rest,uid });
       toast.success("User Created!");
+      // Redirect to login page
+      navigate("/login");
     } catch (e) {
       console.log(e);
       if (e.message.includes("auth/email-already-in-use")) {
@@ -100,18 +106,16 @@ function AdminSignUp() {
       }
     }
 
-
-
-      // .then((userCredential) => {
-      //   // Signed up
-      //   const user = userCredential.user;
-      //   // ...
-      // })
-      // .catch((error) => {
-      //   const errorCode = error.code;
-      //   const errorMessage = error.message;
-      //   // ..
-      // });
+    // .then((userCredential) => {
+    //   // Signed up
+    //   const user = userCredential.user;
+    //   // ...
+    // })
+    // .catch((error) => {
+    //   const errorCode = error.code;
+    //   const errorMessage = error.message;
+    //   // ..
+    // });
 
     // TODO: Do what you need to do with this obj
     // Firebase , DB Save, ....

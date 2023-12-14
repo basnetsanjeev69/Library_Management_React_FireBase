@@ -4,6 +4,13 @@ import BaseLayout from "../../components/layout/BaseLayout";
 import { Form } from "react-bootstrap";
 import CustomInput from "../../components/customInput/CustomInput";
 import { Button } from "react-bootstrap";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth, db } from "../../firebase-config";
+import { toast } from "react-toastify";
+import { doc, getDoc } from "firebase/firestore";
+import { useDispatch } from "react-redux";
+import { setUserInfo } from "../../redux/auth/authSlice";
+import { getUserInfoAction } from "../../redux/auth/authAction";
 
 function Login() {
   const inputs = [
@@ -27,6 +34,7 @@ function Login() {
     
   ];
   const [formData, setFormData] = useState({});
+   const dispatch = useDispatch();
   const handleOnChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -34,12 +42,28 @@ function Login() {
       [name]: value,
     });
   };
-  const handleOnSubmit = (e) => {
+  const handleOnSubmit = async (e) => {
     e.preventDefault(); //it will stop page from refreshing
     console.log(formData);
-    // Validate the input
-    // TODO: Do what you need to do with this obj
-    // Firebase , DB Save, ....
+    const { email, password } = formData;
+    try {
+      const signInPormise = signInWithEmailAndPassword(auth, email, password);
+      toast.promise(signInPormise, {
+        pending: "In Progress...",
+      });
+      const {
+        user: { uid },
+      } = await signInPormise;
+      // Get user info from dB and put that on redux
+      console.log(uid);
+      dispatch(getUserInfoAction(uid));
+    } catch (e) {
+      if (e.message.includes("auth/invalid-credential")) {
+        toast.error("Email or Password not match");
+      } else {
+        toast.error(e.message);
+      }
+    }
   };
   return (
     <>
