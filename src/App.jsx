@@ -11,6 +11,8 @@ import AddBooks from './pages/books/AddBooks'
 import EditBooks from './pages/books/EditBooks'
 import Clients from './pages/clients/Clients'
 import History from './pages/history/History'
+  import { ToastContainer } from "react-toastify";
+  import "react-toastify/dist/ReactToastify.css";
 
 function App() {
  
@@ -29,7 +31,8 @@ function App() {
   <Route path='/history' element={<History/>}></Route>
   <Route path='/clients' element={<Clients/>}></Route>
  
- </Routes>
+      </Routes>
+      <ToastContainer/>
     </>
   )
 }
