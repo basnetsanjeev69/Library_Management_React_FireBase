@@ -1,9 +1,12 @@
 import React from 'react'
+import AdminLayout from '../../components/layouts/AdminLayout'
 
 function Clients() {
-  return (
-    <div>Clients</div>
-  )
+    return (
+        <AdminLayout title="Clients">
+            body
+        </AdminLayout>
+    )
 }
 
 export default Clients
